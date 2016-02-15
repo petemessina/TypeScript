@@ -1729,6 +1729,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                     emit(node.propertyName);
                     write(": ");
                 }
+                else if (modulekind !== ModuleKind.ES6 && node.parent.kind === SyntaxKind.ObjectBindingPattern) {
+                    const decl = getRootDeclaration(node);
+                    if (decl.kind === SyntaxKind.VariableDeclaration && 
+                        (getCombinedNodeFlags(decl) & NodeFlags.Export || isSourceFileLevelDeclarationInSystemJsModule(decl, false))
+                        && !isBindingPattern(node.name)) {
+                        writeTextOfNode(currentText, node.name);
+                        write(": ");
+                    }
+                }
                 if (node.dotDotDotToken) {
                     write("...");
                 }
@@ -4207,17 +4216,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                         emitDestructuring(node, /*isAssignmentExpressionStatement*/ false);
                     }
                     else {
+                        const emitAsDestructuringAssignment = 
+                            modulekind !== ModuleKind.ES6 &&
+                            (
+                                getCombinedNodeFlags(node) & NodeFlags.Export || 
+                                isSourceFileLevelDeclarationInSystemJsModule(node, false)
+                            );
+                        if (emitAsDestructuringAssignment) {
+                            write("(");
+                        }
+
                         emit(node.name);
                         emitOptional(" = ", node.initializer);
+
+                        if (emitAsDestructuringAssignment) {
+                            write(")");
+                        }
+                        // TODO: emit reexports
                     }
                 }
                 else {
                     let initializer = node.initializer;
-                    if (!initializer &&
-                        languageVersion < ScriptTarget.ES6 &&
-                        // for names - binding patterns that lack initializer there is no point to emit explicit initializer
-                        // since downlevel codegen for destructuring will fail in the absence of initializer so all binding elements will say uninitialized
-                        node.name.kind === SyntaxKind.Identifier) {
+                    if (!initializer && languageVersion < ScriptTarget.ES6) {
 
                         const container = getEnclosingBlockScopeContainer(node);
                         const flags = resolver.getNodeCheckFlags(node);
