@@ -7,11 +7,13 @@ interface A {
 abstract class B implements A {
     abstract prop: string;
     abstract raw: string;
+    abstract readonly ro: string;
     abstract m(): void;
 }
 class C extends B {
     get prop() { return "foo"; }
     set prop(v) { }
     raw = "edge";
+    ro = "readonly please";
     m() { }
 }

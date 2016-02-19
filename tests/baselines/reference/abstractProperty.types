@@ -21,6 +21,9 @@ abstract class B implements A {
     abstract raw: string;
 >raw : string
 
+    abstract readonly ro: string;
+>ro : string
+
     abstract m(): void;
 >m : () => void
 }
@@ -40,6 +43,11 @@ class C extends B {
 >raw : string
 >"edge" : string
 
+    ro = "readonly please";
+>ro : string
+>"readonly please" : string
+
     m() { }
 >m : () => void
 }
+

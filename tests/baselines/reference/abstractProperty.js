@@ -7,14 +7,17 @@ interface A {
 abstract class B implements A {
     abstract prop: string;
     abstract raw: string;
+    abstract readonly ro: string;
     abstract m(): void;
 }
 class C extends B {
     get prop() { return "foo"; }
     set prop(v) { }
     raw = "edge";
+    ro = "readonly please";
     m() { }
 }
+
 
 //// [abstractProperty.js]
 var __extends = (this && this.__extends) || function (d, b) {
@@ -32,6 +35,7 @@ var C = (function (_super) {
     function C() {
         _super.apply(this, arguments);
         this.raw = "edge";
+        this.ro = "readonly please";
     }
     Object.defineProperty(C.prototype, "prop", {
         get: function () { return "foo"; },
