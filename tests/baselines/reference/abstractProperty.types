@@ -1,0 +1,45 @@
+=== tests/cases/compiler/abstractProperty.ts ===
+interface A {
+>A : A
+
+    prop: string;
+>prop : string
+
+    raw: string;
+>raw : string
+
+    m(): void;
+>m : () => void
+}
+abstract class B implements A {
+>B : B
+>A : A
+
+    abstract prop: string;
+>prop : string
+
+    abstract raw: string;
+>raw : string
+
+    abstract m(): void;
+>m : () => void
+}
+class C extends B {
+>C : C
+>B : B
+
+    get prop() { return "foo"; }
+>prop : string
+>"foo" : string
+
+    set prop(v) { }
+>prop : string
+>v : string
+
+    raw = "edge";
+>raw : string
+>"edge" : string
+
+    m() { }
+>m : () => void
+}
