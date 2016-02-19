@@ -1,28 +1,75 @@
+tests/cases/compiler/abstractPropertyNegative.ts(11,7): error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'm' from class 'B'.
 tests/cases/compiler/abstractPropertyNegative.ts(11,7): error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'prop' from class 'B'.
-tests/cases/compiler/abstractPropertyNegative.ts(11,7): error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'raw' from class 'B'.
-tests/cases/compiler/abstractPropertyNegative.ts(18,1): error TS2450: Left-hand side of assignment expression cannot be a constant or a read-only property.
+tests/cases/compiler/abstractPropertyNegative.ts(11,7): error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'readonlyProp' from class 'B'.
+tests/cases/compiler/abstractPropertyNegative.ts(13,5): error TS1244: Abstract methods can only appear within an abstract class.
+tests/cases/compiler/abstractPropertyNegative.ts(14,37): error TS1005: '{' expected.
+tests/cases/compiler/abstractPropertyNegative.ts(17,1): error TS2450: Left-hand side of assignment expression cannot be a constant or a read-only property.
+tests/cases/compiler/abstractPropertyNegative.ts(22,7): error TS2415: Class 'WrongTypePropertyImpl' incorrectly extends base class 'WrongTypeProperty'.
+  Types of property 'num' are incompatible.
+    Type 'string' is not assignable to type 'number'.
+tests/cases/compiler/abstractPropertyNegative.ts(28,7): error TS2415: Class 'WrongTypeAccessorImpl' incorrectly extends base class 'WrongTypeAccessor'.
+  Types of property 'num' are incompatible.
+    Type 'string' is not assignable to type 'number'.
+tests/cases/compiler/abstractPropertyNegative.ts(31,7): error TS2415: Class 'WrongTypeAccessorImpl2' incorrectly extends base class 'WrongTypeAccessor'.
+  Types of property 'num' are incompatible.
+    Type 'string' is not assignable to type 'number'.
 
 
-==== tests/cases/compiler/abstractPropertyNegative.ts (3 errors) ====
+==== tests/cases/compiler/abstractPropertyNegative.ts (9 errors) ====
     interface A {
         prop: string;
-        m(): void;
+        m(): string;
     }
     abstract class B implements A {
         abstract prop: string;
-        abstract raw: string;
-        abstract readonly ro: string;
-        abstract m(): void;
+        public abstract readonly ro: string;
+        abstract get readonlyProp(): string;
+        abstract m(): string;
     }
     class C extends B {
           ~
+!!! error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'm' from class 'B'.
+          ~
 !!! error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'prop' from class 'B'.
           ~
-!!! error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'raw' from class 'B'.
-        ro = "readonly please";
-        m() { }
+!!! error TS2515: Non-abstract class 'C' does not implement inherited abstract member 'readonlyProp' from class 'B'.
+        readonly ro = "readonly please";
+        abstract notAllowed: string;
+        ~~~~~~~~
+!!! error TS1244: Abstract methods can only appear within an abstract class.
+        get concreteWithNoBody(): string;
+                                        ~
+!!! error TS1005: '{' expected.
     }
     let c = new C();
-    c.ro = "updated";
+    c.ro = "error: lhs of assignment can't be readonly";
     ~~~~
 !!! error TS2450: Left-hand side of assignment expression cannot be a constant or a read-only property.
+    
+    abstract class WrongTypeProperty {
+        abstract num: number;
+    }
+    class WrongTypePropertyImpl extends WrongTypeProperty {
+          ~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2415: Class 'WrongTypePropertyImpl' incorrectly extends base class 'WrongTypeProperty'.
+!!! error TS2415:   Types of property 'num' are incompatible.
+!!! error TS2415:     Type 'string' is not assignable to type 'number'.
+        num = "nope, wrong";
+    }
+    abstract class WrongTypeAccessor {
+        abstract get num(): number;
+    }
+    class WrongTypeAccessorImpl extends WrongTypeAccessor {
+          ~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2415: Class 'WrongTypeAccessorImpl' incorrectly extends base class 'WrongTypeAccessor'.
+!!! error TS2415:   Types of property 'num' are incompatible.
+!!! error TS2415:     Type 'string' is not assignable to type 'number'.
+        get num() { return "nope, wrong"; }
+    }
+    class WrongTypeAccessorImpl2 extends WrongTypeAccessor {
+          ~~~~~~~~~~~~~~~~~~~~~~
+!!! error TS2415: Class 'WrongTypeAccessorImpl2' incorrectly extends base class 'WrongTypeAccessor'.
+!!! error TS2415:   Types of property 'num' are incompatible.
+!!! error TS2415:     Type 'string' is not assignable to type 'number'.
+        num = "nope, wrong";
+    }

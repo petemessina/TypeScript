@@ -8,15 +8,18 @@ abstract class B implements A {
     abstract prop: string;
     abstract raw: string;
     abstract readonly ro: string;
+    abstract get readonlyProp(): string;
     abstract m(): void;
 }
 class C extends B {
     get prop() { return "foo"; }
     set prop(v) { }
     raw = "edge";
-    ro = "readonly please";
+    readonly ro = "readonly please";
+    readonlyProp: string; // don't have to give a value, in fact
     m() { }
 }
+
 
 
 //// [abstractProperty.js]
@@ -28,6 +31,11 @@ var __extends = (this && this.__extends) || function (d, b) {
 var B = (function () {
     function B() {
     }
+    Object.defineProperty(B.prototype, "readonlyProp", {
+        get: function () { },
+        enumerable: true,
+        configurable: true
+    });
     return B;
 }());
 var C = (function (_super) {

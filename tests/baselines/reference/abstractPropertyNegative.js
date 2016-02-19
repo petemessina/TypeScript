@@ -1,20 +1,37 @@
 //// [abstractPropertyNegative.ts]
 interface A {
     prop: string;
-    m(): void;
+    m(): string;
 }
 abstract class B implements A {
     abstract prop: string;
-    abstract raw: string;
-    abstract readonly ro: string;
-    abstract m(): void;
+    public abstract readonly ro: string;
+    abstract get readonlyProp(): string;
+    abstract m(): string;
 }
 class C extends B {
-    ro = "readonly please";
-    m() { }
+    readonly ro = "readonly please";
+    abstract notAllowed: string;
+    get concreteWithNoBody(): string;
 }
 let c = new C();
-c.ro = "updated";
+c.ro = "error: lhs of assignment can't be readonly";
+
+abstract class WrongTypeProperty {
+    abstract num: number;
+}
+class WrongTypePropertyImpl extends WrongTypeProperty {
+    num = "nope, wrong";
+}
+abstract class WrongTypeAccessor {
+    abstract get num(): number;
+}
+class WrongTypeAccessorImpl extends WrongTypeAccessor {
+    get num() { return "nope, wrong"; }
+}
+class WrongTypeAccessorImpl2 extends WrongTypeAccessor {
+    num = "nope, wrong";
+}
 
 //// [abstractPropertyNegative.js]
 var __extends = (this && this.__extends) || function (d, b) {
@@ -25,6 +42,11 @@ var __extends = (this && this.__extends) || function (d, b) {
 var B = (function () {
     function B() {
     }
+    Object.defineProperty(B.prototype, "readonlyProp", {
+        get: function () { },
+        enumerable: true,
+        configurable: true
+    });
     return B;
 }());
 var C = (function (_super) {
@@ -33,8 +55,55 @@ var C = (function (_super) {
         _super.apply(this, arguments);
         this.ro = "readonly please";
     }
-    C.prototype.m = function () { };
+    Object.defineProperty(C.prototype, "concreteWithNoBody", {
+        get: function () { },
+        enumerable: true,
+        configurable: true
+    });
     return C;
 }(B));
 var c = new C();
-c.ro = "updated";
+c.ro = "error: lhs of assignment can't be readonly";
+var WrongTypeProperty = (function () {
+    function WrongTypeProperty() {
+    }
+    return WrongTypeProperty;
+}());
+var WrongTypePropertyImpl = (function (_super) {
+    __extends(WrongTypePropertyImpl, _super);
+    function WrongTypePropertyImpl() {
+        _super.apply(this, arguments);
+        this.num = "nope, wrong";
+    }
+    return WrongTypePropertyImpl;
+}(WrongTypeProperty));
+var WrongTypeAccessor = (function () {
+    function WrongTypeAccessor() {
+    }
+    Object.defineProperty(WrongTypeAccessor.prototype, "num", {
+        get: function () { },
+        enumerable: true,
+        configurable: true
+    });
+    return WrongTypeAccessor;
+}());
+var WrongTypeAccessorImpl = (function (_super) {
+    __extends(WrongTypeAccessorImpl, _super);
+    function WrongTypeAccessorImpl() {
+        _super.apply(this, arguments);
+    }
+    Object.defineProperty(WrongTypeAccessorImpl.prototype, "num", {
+        get: function () { return "nope, wrong"; },
+        enumerable: true,
+        configurable: true
+    });
+    return WrongTypeAccessorImpl;
+}(WrongTypeAccessor));
+var WrongTypeAccessorImpl2 = (function (_super) {
+    __extends(WrongTypeAccessorImpl2, _super);
+    function WrongTypeAccessorImpl2() {
+        _super.apply(this, arguments);
+        this.num = "nope, wrong";
+    }
+    return WrongTypeAccessorImpl2;
+}(WrongTypeAccessor));

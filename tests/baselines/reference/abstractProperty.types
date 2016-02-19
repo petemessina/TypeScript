@@ -24,6 +24,9 @@ abstract class B implements A {
     abstract readonly ro: string;
 >ro : string
 
+    abstract get readonlyProp(): string;
+>readonlyProp : string
+
     abstract m(): void;
 >m : () => void
 }
@@ -43,11 +46,15 @@ class C extends B {
 >raw : string
 >"edge" : string
 
-    ro = "readonly please";
+    readonly ro = "readonly please";
 >ro : string
 >"readonly please" : string
+
+    readonlyProp: string; // don't have to give a value, in fact
+>readonlyProp : string
 
     m() { }
 >m : () => void
 }
+
 

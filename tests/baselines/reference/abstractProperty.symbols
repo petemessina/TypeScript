@@ -24,27 +24,34 @@ abstract class B implements A {
     abstract readonly ro: string;
 >ro : Symbol(ro, Decl(abstractProperty.ts, 7, 25))
 
+    abstract get readonlyProp(): string;
+>readonlyProp : Symbol(readonlyProp, Decl(abstractProperty.ts, 8, 33))
+
     abstract m(): void;
->m : Symbol(m, Decl(abstractProperty.ts, 8, 33))
+>m : Symbol(m, Decl(abstractProperty.ts, 9, 40))
 }
 class C extends B {
->C : Symbol(C, Decl(abstractProperty.ts, 10, 1))
+>C : Symbol(C, Decl(abstractProperty.ts, 11, 1))
 >B : Symbol(B, Decl(abstractProperty.ts, 4, 1))
 
     get prop() { return "foo"; }
->prop : Symbol(prop, Decl(abstractProperty.ts, 11, 19), Decl(abstractProperty.ts, 12, 32))
+>prop : Symbol(prop, Decl(abstractProperty.ts, 12, 19), Decl(abstractProperty.ts, 13, 32))
 
     set prop(v) { }
->prop : Symbol(prop, Decl(abstractProperty.ts, 11, 19), Decl(abstractProperty.ts, 12, 32))
->v : Symbol(v, Decl(abstractProperty.ts, 13, 13))
+>prop : Symbol(prop, Decl(abstractProperty.ts, 12, 19), Decl(abstractProperty.ts, 13, 32))
+>v : Symbol(v, Decl(abstractProperty.ts, 14, 13))
 
     raw = "edge";
->raw : Symbol(raw, Decl(abstractProperty.ts, 13, 19))
+>raw : Symbol(raw, Decl(abstractProperty.ts, 14, 19))
 
-    ro = "readonly please";
->ro : Symbol(ro, Decl(abstractProperty.ts, 14, 17))
+    readonly ro = "readonly please";
+>ro : Symbol(ro, Decl(abstractProperty.ts, 15, 17))
+
+    readonlyProp: string; // don't have to give a value, in fact
+>readonlyProp : Symbol(readonlyProp, Decl(abstractProperty.ts, 16, 36))
 
     m() { }
->m : Symbol(m, Decl(abstractProperty.ts, 15, 27))
+>m : Symbol(m, Decl(abstractProperty.ts, 17, 25))
 }
+
 
