@@ -16483,7 +16483,10 @@ namespace ts {
                             return grammarErrorOnNode(modifier, Diagnostics._0_modifier_already_seen, "abstract");
                         }
                         if (node.kind !== SyntaxKind.ClassDeclaration) {
-                            if (node.kind !== SyntaxKind.MethodDeclaration && node.kind !== SyntaxKind.PropertyDeclaration) {
+                            if (node.kind !== SyntaxKind.MethodDeclaration &&
+                                node.kind !== SyntaxKind.PropertyDeclaration &&
+                                node.kind !== SyntaxKind.GetAccessor &&
+                                node.kind !== SyntaxKind.SetAccessor) {
                                 return grammarErrorOnNode(modifier, Diagnostics.abstract_modifier_can_only_appear_on_a_class_method_or_property_declaration);
                             }
                             if (!(node.parent.kind === SyntaxKind.ClassDeclaration && node.parent.flags & NodeFlags.Abstract)) {
@@ -16978,7 +16981,7 @@ namespace ts {
             else if (isInAmbientContext(accessor)) {
                 return grammarErrorOnNode(accessor.name, Diagnostics.An_accessor_cannot_be_declared_in_an_ambient_context);
             }
-            else if (accessor.body === undefined) {
+            else if (accessor.body === undefined && !(accessor.flags & NodeFlags.Abstract)) {
                 return grammarErrorAtPos(getSourceFileOfNode(accessor), accessor.end - 1, ";".length, Diagnostics._0_expected, "{");
             }
             else if (accessor.typeParameters) {
