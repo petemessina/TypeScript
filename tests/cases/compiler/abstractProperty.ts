@@ -9,6 +9,7 @@ abstract class B implements A {
     abstract raw: string;
     abstract readonly ro: string;
     abstract get readonlyProp(): string;
+    abstract set readonlyProp(val: string);
     abstract m(): void;
 }
 class C extends B {
@@ -20,3 +21,13 @@ class C extends B {
     m() { }
 }
 
+abstract class AbstractAccessorMismatch {
+    abstract get p1(): string;
+    set p1(val: string) { };
+    get p2(): string { return "should work"; }
+    abstract set p2(val: string);
+}
+class AbstractAccessorMismatchImpl extends AbstractAccessorMismatch {
+    get p1(): string { return "impl"; }
+    set p2(val: string) { }
+}

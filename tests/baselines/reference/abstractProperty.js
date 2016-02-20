@@ -9,6 +9,7 @@ abstract class B implements A {
     abstract raw: string;
     abstract readonly ro: string;
     abstract get readonlyProp(): string;
+    abstract set readonlyProp(val: string);
     abstract m(): void;
 }
 class C extends B {
@@ -20,7 +21,16 @@ class C extends B {
     m() { }
 }
 
-
+abstract class AbstractAccessorMismatch {
+    abstract get p1(): string;
+    set p1(val: string) { };
+    get p2(): string { return "should work"; }
+    abstract set p2(val: string);
+}
+class AbstractAccessorMismatchImpl extends AbstractAccessorMismatch {
+    get p1(): string { return "impl"; }
+    set p2(val: string) { }
+}
 
 //// [abstractProperty.js]
 var __extends = (this && this.__extends) || function (d, b) {
@@ -33,6 +43,7 @@ var B = (function () {
     }
     Object.defineProperty(B.prototype, "readonlyProp", {
         get: function () { },
+        set: function (val) { },
         enumerable: true,
         configurable: true
     });
@@ -54,3 +65,38 @@ var C = (function (_super) {
     C.prototype.m = function () { };
     return C;
 }(B));
+var AbstractAccessorMismatch = (function () {
+    function AbstractAccessorMismatch() {
+    }
+    Object.defineProperty(AbstractAccessorMismatch.prototype, "p1", {
+        get: function () { },
+        set: function (val) { },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    Object.defineProperty(AbstractAccessorMismatch.prototype, "p2", {
+        get: function () { return "should work"; },
+        set: function (val) { },
+        enumerable: true,
+        configurable: true
+    });
+    return AbstractAccessorMismatch;
+}());
+var AbstractAccessorMismatchImpl = (function (_super) {
+    __extends(AbstractAccessorMismatchImpl, _super);
+    function AbstractAccessorMismatchImpl() {
+        _super.apply(this, arguments);
+    }
+    Object.defineProperty(AbstractAccessorMismatchImpl.prototype, "p1", {
+        get: function () { return "impl"; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AbstractAccessorMismatchImpl.prototype, "p2", {
+        set: function (val) { },
+        enumerable: true,
+        configurable: true
+    });
+    return AbstractAccessorMismatchImpl;
+}(AbstractAccessorMismatch));

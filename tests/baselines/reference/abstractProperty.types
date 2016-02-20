@@ -27,6 +27,10 @@ abstract class B implements A {
     abstract get readonlyProp(): string;
 >readonlyProp : string
 
+    abstract set readonlyProp(val: string);
+>readonlyProp : string
+>val : string
+
     abstract m(): void;
 >m : () => void
 }
@@ -57,4 +61,33 @@ class C extends B {
 >m : () => void
 }
 
+abstract class AbstractAccessorMismatch {
+>AbstractAccessorMismatch : AbstractAccessorMismatch
 
+    abstract get p1(): string;
+>p1 : string
+
+    set p1(val: string) { };
+>p1 : string
+>val : string
+
+    get p2(): string { return "should work"; }
+>p2 : string
+>"should work" : string
+
+    abstract set p2(val: string);
+>p2 : string
+>val : string
+}
+class AbstractAccessorMismatchImpl extends AbstractAccessorMismatch {
+>AbstractAccessorMismatchImpl : AbstractAccessorMismatchImpl
+>AbstractAccessorMismatch : AbstractAccessorMismatch
+
+    get p1(): string { return "impl"; }
+>p1 : string
+>"impl" : string
+
+    set p2(val: string) { }
+>p2 : string
+>val : string
+}
